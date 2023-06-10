@@ -1,0 +1,24 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""todos """
+type TodoEntity {
+  id: ID!
+  userId: ID!
+  text: String!
+  status: String!
+}
+
+type Query {
+  getTodo(TodoCreateInput: TodoCreateInput!): TodoEntity!
+}
+
+input TodoCreateInput {
+  text: String!
+  userId: String
+}
+
+type Mutation {
+  createTodo(TodoCreateInput: TodoCreateInput!): TodoEntity!
+}
