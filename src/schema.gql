@@ -10,8 +10,16 @@ type TodoEntity {
   status: String!
 }
 
+"""users """
+type UserEntity {
+  id: ID!
+  firstName: String!
+  lastName: String!
+}
+
 type Query {
   getTodo(TodoCreateInput: TodoCreateInput!): TodoEntity!
+  getUser(UserCreateInput: UserCreateInput!): UserEntity!
 }
 
 input TodoCreateInput {
@@ -19,6 +27,12 @@ input TodoCreateInput {
   userId: String
 }
 
+input UserCreateInput {
+  text: String!
+  userId: String
+}
+
 type Mutation {
   createTodo(TodoCreateInput: TodoCreateInput!): TodoEntity!
+  createUser(UserCreateInput: UserCreateInput!): UserEntity!
 }

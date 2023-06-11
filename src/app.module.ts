@@ -9,6 +9,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TodosModule } from './todo/TodoModule';
 import { TodoEntity } from './todo/infrastructure/entity/TodoEntity';
+import { UsersModule } from './user/UserModule';
 const databaseConfig: SequelizeModuleOptions = {
   host: 'mysql',
   dialect: 'mysql',
@@ -37,6 +38,7 @@ const databaseConfig: SequelizeModuleOptions = {
     //   name: 'read',
     // }),
     TodosModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

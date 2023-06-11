@@ -1,20 +1,17 @@
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-
-// import { DeleteTodoRequestParam } from 'src/todo/interface/dto/DeleteTodoRequestParam';
-// import { DepositRequestDto } from 'src/todo/interface/dto/DepositRequestDto';
-// import { DepositRequestParam } from 'src/todo/interface/dto/DepositRequestParam';
-// import { FindTodoByIdRequestParam } from 'src/todo/interface/dto/FindTodoByIdRequestParam';
-// import { FindTodoByIdResponseDTO } from 'src/todo/interface/dto/FindTodoByIdResponseDTO';
-// import { FindTodosRequestQueryString } from 'src/todo/interface/dto/FindTodosRequestQueryString';
-// import { FindTodosResponseDto } from 'src/todo/interface/dto/FindTodosResponseDto';
+import { CommandBus, EventPublisher, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TodoCreateCommand } from '../application/command/impl/TodoCreateCommand';
+import { TodoImplement } from '../domain/Todo';
 import { TodoEntity } from '../infrastructure/entity/TodoEntity';
 import { TodoCreateInput } from './dto/TodoCreateInput';
 
-@Resolver((of) => TodoEntity)
+@Resolver(() => TodoEntity)
 export class TodoResolver {
-  constructor(readonly commandBus: CommandBus, readonly queryBus: QueryBus) {}
+  constructor(
+    readonly commandBus: CommandBus,
+    readonly queryBus: QueryBus,
+    private readonly publisher: EventPublisher,
+  ) {}
 
   @Mutation(() => TodoEntity)
   async createTodo(
@@ -22,12 +19,18 @@ export class TodoResolver {
   ): Promise<void> {
     const command = new TodoCreateCommand(body.text, body.userId);
     const response = await this.commandBus.execute(command);
+
+    const todo = this.publisher.mergeObjectContext(new TodoImplement(response));
+    todo.create();
+    todo.commit();
     return response;
   }
   @Query((returns) => TodoEntity)
   async getTodo(@Args('TodoCreateInput') body: TodoCreateInput): Promise<void> {
     const command = new TodoCreateCommand(body.text, body.userId);
     const response = await this.commandBus.execute(command);
+
+    // const
     return response;
   }
 
