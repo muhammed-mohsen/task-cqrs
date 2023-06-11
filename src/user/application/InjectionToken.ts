@@ -1,5 +1,5 @@
 export enum InjectionToken {
-  TODO_REPOSITORY = 'UserRepository',
-  TODO_QUERY = 'UserQuery',
+  USER_REPOSITORY = 'UserRepository',
+  USER_QUERY = 'UserQuery',
   INTEGRATION_EVENT_PUBLISHER = 'IntegrationEventPublisher',
 }

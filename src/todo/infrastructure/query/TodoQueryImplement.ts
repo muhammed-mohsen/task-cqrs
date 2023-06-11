@@ -7,10 +7,11 @@ import { FindTodoByIdResult } from 'src/todo/application/query/FindTodoByIdResul
 import { FindTodosQuery } from 'src/todo/application/query/FindTodosQuery';
 import { FindTodosResult } from 'src/todo/application/query/FindTodosResult';
 import { TodoQuery } from 'src/todo/application/query/TodoQuery';
+import { UserEntity } from 'src/user/infrastructure/entity/UserEntity';
 
 @Injectable()
 export class TodoQueryImplement implements TodoQuery {
-  @InjectModel(TodoEntity, 'read')
+  @InjectModel(TodoEntity)
   private readonly todoRepository: typeof TodoEntity;
 
   async findById(id: string): Promise<FindTodoByIdResult | null> {
@@ -21,6 +22,7 @@ export class TodoQueryImplement implements TodoQuery {
     return this.todoRepository
       .findAll({
         offset: query.take,
+        include: UserEntity,
       })
       .then((entities) => ({
         todos: entities,

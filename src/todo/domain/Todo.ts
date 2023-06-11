@@ -1,5 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs';
-import { TodoCreatedEvent } from './event/TodoCreatedEvent';
+import { TodoUpdatedEvent } from './event/TodoUpdatedEvent';
 
 export type TodoEssentialProperties = Readonly<
   Required<{
@@ -24,7 +24,7 @@ export type TodoProperties = TodoEssentialProperties &
   Required<TodoOptionalProperties>;
 
 export interface Todo {
-  create: () => void;
+  update: () => void;
 }
 
 export class TodoImplement extends AggregateRoot implements Todo {
@@ -32,9 +32,9 @@ export class TodoImplement extends AggregateRoot implements Todo {
     super();
   }
 
-  create(): void {
+  update(): void {
     this.apply(
-      new TodoCreatedEvent(this.properties.userId, {
+      new TodoUpdatedEvent(this.properties.userId, {
         ...this.properties,
       }),
     );

@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { TodosModule } from './todo/TodoModule';
 import { TodoEntity } from './todo/infrastructure/entity/TodoEntity';
 import { UsersModule } from './user/UserModule';
+import { UserEntity } from './user/infrastructure/entity/UserEntity';
 const databaseConfig: SequelizeModuleOptions = {
   host: 'mysql',
   dialect: 'mysql',
@@ -20,7 +21,7 @@ const databaseConfig: SequelizeModuleOptions = {
   database: 'todo',
   // autoLoadModels: true,
   // synchronize: true,
-  models: [TodoEntity],
+  models: [TodoEntity, UserEntity],
 };
 @Module({
   imports: [
@@ -33,10 +34,10 @@ const databaseConfig: SequelizeModuleOptions = {
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true, // Enable GraphQL Playground
     }),
-    // SequelizeModule.forRoot({
-    //   ...databaseConfig,
-    //   name: 'read',
-    // }),
+    SequelizeModule.forRoot({
+      ...databaseConfig,
+      name: 'read',
+    }),
     TodosModule,
     UsersModule,
   ],

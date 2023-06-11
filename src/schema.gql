@@ -2,24 +2,35 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-"""todos """
-type TodoEntity {
-  id: ID!
-  userId: ID!
-  text: String!
-  status: String!
-}
-
 """users """
 type UserEntity {
   id: ID!
+  todo: [TodoEntity!]!
   firstName: String!
   lastName: String!
 }
 
+"""todos """
+type TodoEntity {
+  id: ID!
+  userId: ID!
+  user: UserEntity!
+  text: String!
+  status: String!
+}
+
 type Query {
-  getTodo(TodoCreateInput: TodoCreateInput!): TodoEntity!
-  getUser(UserCreateInput: UserCreateInput!): UserEntity!
+  todos: [TodoEntity!]!
+  getTodo(id: String!): TodoEntity!
+  users: [UserEntity!]!
+  getUser(id: String!): UserEntity!
+}
+
+type Mutation {
+  createTodo(TodoCreateInput: TodoCreateInput!): TodoEntity!
+  removeTodo(id: String!): TodoEntity!
+  updateTodo(id: ID!, TodoUpdateInput: TodoUpdateInput!): TodoEntity!
+  createUser(UserCreateInput: UserCreateInput!): UserEntity!
 }
 
 input TodoCreateInput {
@@ -27,12 +38,12 @@ input TodoCreateInput {
   userId: String
 }
 
-input UserCreateInput {
-  text: String!
+input TodoUpdateInput {
+  text: String
   userId: String
 }
 
-type Mutation {
-  createTodo(TodoCreateInput: TodoCreateInput!): TodoEntity!
-  createUser(UserCreateInput: UserCreateInput!): UserEntity!
+input UserCreateInput {
+  text: String!
+  userId: String
 }

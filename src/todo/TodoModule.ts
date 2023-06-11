@@ -5,6 +5,11 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { InjectionToken } from 'src/todo/application/InjectionToken';
 import { TodoFactory } from 'src/todo/domain/TodoFactory';
 import { TodoCreateHandler } from './application/command/handler/TodoCreateHandler';
+import { TodoRemoveHandler } from './application/command/handler/TodoRemoveHandler';
+import { TodoUpdateHandler } from './application/command/handler/TodoUpdateHandler';
+import { TodoUpdatedHandler } from './application/events/TodoUpdatedHandler';
+import { FindTodoByIdHandler } from './application/query/FindTodoByIdHandler';
+import { FindTodosHandler } from './application/query/FindTodosHandler';
 import { TodoEntity } from './infrastructure/entity/TodoEntity';
 import { TodoQueryImplement } from './infrastructure/query/TodoQueryImplement';
 import { TodoResolver } from './interface/TodoResolver';
@@ -17,21 +22,12 @@ const infrastructure: Provider[] = [
 ];
 
 const application = [
-  //   CloseTodoHandler,
-  //   DepositHandler,
-  //   OpenTodoHandler,
-  //   RemitHandler,
-  //   UpdatePasswordHandler,
-  //   WithdrawHandler,
-  //   FindTodoByIdHandler,
-  //   FindTodosHandler,
-  //   TodoOpenedHandler,
-  //   LockTodoHandler,
-  //   PasswordUpdatedHandler,
-  //   TodoClosedHandler,
-  //   DepositedHandler,
-  //   WithdrawnHandler,
   TodoCreateHandler,
+  FindTodosHandler,
+  FindTodoByIdHandler,
+  TodoRemoveHandler,
+  TodoUpdateHandler,
+  TodoUpdatedHandler,
 ];
 
 const domain = [TodoFactory];
@@ -46,21 +42,4 @@ const domain = [TodoFactory];
     ...domain,
   ],
 })
-export class TodosModule {
-  //   @Inject(TASK_PUBLISHER) private readonly taskPublisher: TaskPublisher;
-  //   @Inject(ENTITY_ID_TRANSFORMER)
-  //   private readonly entityIdTransformer: EntityIdTransformer;
-  //   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  //   async lockUnusedTodo(): Promise<void> {
-  //     (
-  //       await writeConnection.manager
-  //         .getRepository(TodoEntity)
-  //         .findBy({ updatedAt: LessThan(addYears(new Date(), -1)) })
-  //     ).forEach((todo) =>
-  //       this.taskPublisher.publish(
-  //         LockTodoCommand.name,
-  //         new LockTodoCommand(this.entityIdTransformer.from(todo.id)),
-  //       ),
-  //     );
-  //   }
-}
+export class TodosModule {}

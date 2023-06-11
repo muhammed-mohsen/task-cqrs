@@ -1,10 +1,10 @@
 import { IQuery } from '@nestjs/cqrs';
 
-export class FindTodosQuery implements IQuery {
+export class FindUsersQuery implements IQuery {
   // readonly skip: number;
   readonly take?: number;
 
-  constructor(options: FindTodosQuery) {
+  constructor(options: FindUsersQuery) {
     Object.assign(this, options);
   }
 }

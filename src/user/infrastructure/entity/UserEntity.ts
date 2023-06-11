@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { TodoEntity } from 'src/todo/infrastructure/entity/TodoEntity';
 
 @ObjectType({ description: 'users ' })
 @Table({ tableName: 'users' })
@@ -12,6 +13,10 @@ export class UserEntity extends Model {
   @Field((type) => ID)
   id: string;
 
+  @HasMany(() => TodoEntity)
+  @Field(() => [TodoEntity])
+  todo: TodoEntity[];
+
   @Column({ type: DataType.STRING, allowNull: false })
   @Field()
   firstName: string;
@@ -20,5 +25,3 @@ export class UserEntity extends Model {
   @Field()
   lastName: string;
 }
-
-// import { BaseEntity } from 'src/account/infrastructure/entity/BaseEntity';

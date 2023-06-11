@@ -9,6 +9,8 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 // import { FindUsersResponseDto } from 'src/user/interface/dto/FindUsersResponseDto';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserCreateCommand } from '../application/command/impl/UserCreateCommand';
+import { FindUserByIdQuery } from '../application/query/FindUserByIdQuery';
+import { FindUsersQuery } from '../application/query/FindUsersQuery';
 import { UserEntity } from '../infrastructure/entity/UserEntity';
 import { UserCreateInput } from './dto/UserCreateInput';
 
@@ -24,90 +26,15 @@ export class UserResolver {
     const response = await this.commandBus.execute(command);
     return response;
   }
-  @Query((returns) => UserEntity)
-  async getUser(@Args('UserCreateInput') body: UserCreateInput): Promise<void> {
-    const command = new UserCreateCommand(body.text, body.userId);
-    const response = await this.commandBus.execute(command);
-    return response;
+  @Query((returns) => [UserEntity])
+  async users(): Promise<void> {
+    const query = await this.queryBus.execute(new FindUsersQuery({}));
+    return query.users;
   }
 
-  // @Auth()
-  // @Post('users/:userId/withdraw')
-  // async withdraw(
-  //   // @Headers() header: AuthorizedHeader,
-  //   @Param() param: WithdrawRequestParam,
-  //   @Body() body: WithdrawRequestDTO,
-  // ): Promise<void> {
-  // if (header.userId !== param.userId)
-  //   throw new NotFoundException(ErrorMessage.ACCOUNT_IS_NOT_FOUND);
-  // await this.commandBus.execute(
-  //   new WithdrawCommand(param.userId, body.amount),
-  // );
-  // }
-
-  // @Post('users/:userId/deposit')
-  // async deposit(
-  //   // @Headers() header: AuthorizedHeader,
-  //   @Param() param: DepositRequestParam,
-  //   @Body() body: DepositRequestDto,
-  // ): Promise<void> {
-  // if (header.userId !== param.userId)
-  //   throw new NotFoundException(ErrorMessage.ACCOUNT_IS_NOT_FOUND);
-  // await this.commandBus.execute(
-  //   new DepositCommand(param.userId, body.amount),
-  // );
-  // }
-
-  // @Post('users/:userId/remit')
-  // async remit(
-  //   // @Headers() header: AuthorizedHeader,
-  //   @Param() param: RemitRequestParam,
-  //   @Body() body: RemitRequestDTO,
-  // ): Promise<void> {
-  // if (header.userId !== param.userId)
-  //   throw new NotFoundException(ErrorMessage.ACCOUNT_IS_NOT_FOUND);
-  // await this.commandBus.execute(
-  //   new RemitCommand(param.userId, body.receiverId, body.amount),
-  // );
-  // }
-
-  //   @Auth()
-  // @Patch('users/:userId/password')
-  // async updatePassword(
-  //   // @Headers() header: AuthorizedHeader,
-  //   @Param() param: UpdatePasswordRequestParam,
-  //   @Body() body: UpdatePasswordRequestDTO,
-  // ): Promise<void> {
-  // await this.commandBus.execute(
-  //   new UpdatePasswordCommand(param.userId, body.password),
-  // );
-  // }
-
-  // @Delete('users/:userId')
-  // async closeUser(
-  //   // @Headers() header: AuthorizedHeader,
-  //   @Param() param: DeleteUserRequestParam,
-  // ): Promise<void> {
-  // if (header.userId !== param.userId)
-  //   throw new NotFoundException(ErrorMessage.ACCOUNT_IS_NOT_FOUND);
-  // await this.commandBus.execute(new CloseUserCommand(param.userId));
-  // }
-
-  // @Get('users')
-  // async findUsers(
-  //   @Query() querystring: FindUsersRequestQueryString,
-  // ): Promise<FindUsersResponseDto> {
-  // const query = new FindUsersQuery(querystring);
-  // return { users: await this.queryBus.execute(query) };
-  // }
-
-  // @Get('users/:userId')
-  // async findUserById(
-  // @Headers() header: AuthorizedHeader,
-  //   @Param() param: FindUserByIdRequestParam,
-  // ): Promise<FindUserByIdResponseDTO> {
-  // if (header.userId !== param.userId)
-  //   throw new NotFoundException(ErrorMessage.ACCOUNT_IS_NOT_FOUND);
-  // return this.queryBus.execute(new FindUserByIdQuery(param.userId));
-  // }
+  @Query((returns) => UserEntity)
+  async getUser(@Args('id', { type: () => String }) id: string): Promise<void> {
+    const query = await this.queryBus.execute(new FindUserByIdQuery(id));
+    return query;
+  }
 }
