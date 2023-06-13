@@ -2,13 +2,35 @@ version: '3.8'
 services:
  todo_api:
     container_name: todo_api
-    build: .
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
     ports:
       - '8000:8000'
     volumes:
-      - .:/app
+      - ./api:/app
+    environment:
+      NODE_ENV: development
     depends_on:
       - mysql
+    networks:
+      - todoNetwork
+
+ todo_front:
+    container_name: todo_front
+    build: 
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./front:/app
+    networks:
+      - todoNetwork
+    depends_on:
+      - todo_api
+
+    
 
  mysql:
     image: arm64v8/mysql
@@ -20,6 +42,9 @@ services:
       MYSQL_DATABASE: todo
       MYSQL_USER: user
       MYSQL_PASSWORD: password
+    networks:
+      - todoNetwork
 
-
- 
+networks:
+    todoNetwork:
+      driver: bridge
