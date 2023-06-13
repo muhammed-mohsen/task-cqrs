@@ -1,15 +1,48 @@
-FROM node:18-alpine
+###################
+# BUILD FOR LOCAL DEVELOPMENT
+###################
 
-WORKDIR /app
+FROM node:18-alpine As development
 
+WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
+COPY --chown=node:node package*.json ./
 
-RUN yarn 
+# RUN yarn ci
 
-# Copy the rest of the application code
-COPY . .
+COPY --chown=node:node . .
 
+USER node
 
+###################
+# BUILD FOR PRODUCTION
+###################
 
-CMD ["yarn", "start:dev"]
+FROM node:18-alpine As build
+
+WORKDIR /usr/src/app
+
+COPY --chown=node:node package*.json ./
+
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+
+COPY --chown=node:node . .
+
+RUN yarn run build
+
+ENV NODE_ENV production
+
+RUN yarn ci --only=production && yarn cache clean --force
+
+USER node
+
+###################
+# PRODUCTION
+###################
+
+FROM node:18-alpine As production
+
+COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+
+CMD [ "node", "dist/main.js" ]

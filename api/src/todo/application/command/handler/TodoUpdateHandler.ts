@@ -18,6 +18,5 @@ export class TodoUpdateHandler
     if (!todo) throw new NotFoundException(ErrorMessage.TODO_IS_NOT_FOUND);
 
     return todo.dataValues;
-    // return response.;
   }
 }

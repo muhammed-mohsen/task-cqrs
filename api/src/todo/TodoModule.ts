@@ -3,7 +3,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 
 import { SequelizeModule } from '@nestjs/sequelize';
 import { InjectionToken } from 'src/todo/application/InjectionToken';
-import { TodoFactory } from 'src/todo/domain/TodoFactory';
 import { TodoCreateHandler } from './application/command/handler/TodoCreateHandler';
 import { TodoRemoveHandler } from './application/command/handler/TodoRemoveHandler';
 import { TodoUpdateHandler } from './application/command/handler/TodoUpdateHandler';
@@ -30,8 +29,9 @@ const application = [
   TodoUpdatedHandler,
 ];
 
-const domain = [TodoFactory];
+const domain = [];
 
+console.log(process.env.DATABASE_PORT, 'sdfsad');
 @Module({
   imports: [CqrsModule, SequelizeModule.forFeature([TodoEntity])],
   providers: [
